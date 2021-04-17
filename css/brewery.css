@@ -1,0 +1,14 @@
+body {
+    font-family: Arial;
+    font-size: 120%;
+  }
+  
+  a {
+    color: #563d7c;
+    text-decoration: none;
+    transition: color 0.1s;
+  }
+  
+  a:hover {
+    color: #8570a5;
+  }

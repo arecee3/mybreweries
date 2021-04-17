@@ -1,4 +1,4 @@
 // variables to keep track of quiz state
-var currentQuestionIndex = 0;
-var time = questions.length * 15;
-var timerId;
+let currentQuestionIndex = 0;
+let time = questions.length * 15;
+let timerId;

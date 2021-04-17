@@ -18,3 +18,17 @@ body {
   a:hover {
     color: #8570a5;
   }
+
+/* ------------------------------ */
+/* --- Need to be responsive: --- */
+/* ------------------------------ */
+@media screen and (max-width: 575px)
+{
+  .container {
+    min-width: 275px;
+    margin-left: 1%;
+    margin-right: 1%;
+    padding-left: 2%;
+    padding-right: 2%;
+  }
+}

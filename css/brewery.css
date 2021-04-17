@@ -1,3 +1,9 @@
+:root {
+  --white: #fff;
+  --dark-blue: #13293d;
+  --tan: #d8a47f;
+}
+
 body {
     font-family: Arial;
     font-size: 120%;

@@ -1,8 +1,13 @@
 :root {
   --white: #fff;
-  --dark-blue: #13293d;
+  --dark-blue: #180b4b;
   --tan: #d8a47f;
   font-size: large;
+}
+
+h1 {
+  background-color: var(--dark-blue);
+  color: var(--white);
 }
 
 body {

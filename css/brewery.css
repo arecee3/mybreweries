@@ -10,6 +10,15 @@ h1 {
   color: var(--white);
 }
 
+p {
+  margin: 2px 2px;
+  padding: 1px 1px;
+}
+
+.zip-code-name {
+  text-align: center;
+}
+
 body {
     font-family: Arial;
     font-size: 120%;

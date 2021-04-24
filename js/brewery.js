@@ -61,9 +61,56 @@ function getBreweryInfo( sBreweryName )
         if ( bDebugging )
             console.log( "Brewery [" + sBreweryName + "] clicked! : Index: [" + iIdx + "]" );
         
-        var elCraftBeerHdrEl = document.getElementById( "beerHdr" );
+        // var recBreweryInfo = {
+        //     id : response.data[i].id,
+        //     name : response.data[i].name,
+        //     street : response.data[i].street,
+        //     city : response.data[i].city,
+        //     state : response.data[i].state,
+        //     zip : response.data[i].zip,
+        //     phone : response.data[i].phone,
+        //     longitude: response.data[i].longitude,
+        //     latitude: response.data[i].latitude,
+        //     websiteURL : response.data[i].websiteURL
+        // }
+        
+        var elBreweryNameEl = document.getElementById( "idBreweryName" );
         if ( aBreweries[iIdx].name.length > 0 ) {
-            elCraftBeerHdrEl.innerHTML = aBreweries[iIdx].name;
+            elBreweryNameEl.textContent = aBreweries[iIdx].name;
+        }
+        
+        // idStreet
+        var elBreweryStreetEl = document.getElementById( "idStreet" );
+        if ( aBreweries[iIdx].street.length > 0 ) {
+            elBreweryStreetEl.textContent = aBreweries[iIdx].street;
+        }
+        
+        // idCityStateZip
+        var elBreweryCityStateZipEl = document.getElementById( "idCityStateZip" );
+        if ( aBreweries[iIdx].city && (aBreweries[iIdx].city.length > 0) )
+        {
+            var sCityStateZip = aBreweries[iIdx].city;
+            if ( aBreweries[iIdx].state && (aBreweries[iIdx].state.length > 0) )
+            {
+                sCityStateZip += ", " + aBreweries[iIdx].state;
+                if ( aBreweries[iIdx].zip && (aBreweries[iIdx].zip.length > 0) )
+                {
+                    sCityStateZip += "  " + aBreweries[iIdx].zip;
+                }
+            }
+            elBreweryCityStateZipEl.textContent = sCityStateZip;
+        }
+        
+        // idBreweryWebLink
+        var elBreweryWebUrlEl = document.getElementById( "idBreweryWebLink" );
+        if ( aBreweries[iIdx].websiteURL && (aBreweries[iIdx].websiteURL.length > 0) )
+        {
+            // <a id="idBreweryWebLink" href="#">Link to brewery website</a>
+            var elWebsiteURL = document.createElement( "a" );
+            elWebsiteURL.setAttribute( "id", "idBrewerySite" );
+            elWebsiteURL.setAttribute( "href", aBreweries[iIdx].websiteURL );
+            elWebsiteURL.textContent = "Display " + elBreweryNameEl.textContent+" website";
+            elBreweryWebUrlEl.appendChild( elWebsiteURL );
         }
     }
 }
@@ -172,17 +219,37 @@ function runQuery( sZip2Query )
             
             for( var i=0; i < response.data.length; i++ )
             {
+                //-----------------------------------------------------------
+                //         "id":8041,
+                //         "obdb_id":"10-barrel-brewing-co-san-diego",
+                //         "name":"10 Barrel Brewing Co",
+                //         "brewery_type":"large",
+                //         "street":"1501 E St",
+                //         "address_2":null,
+                //         "address_3":null,
+                //         "city":"San Diego",
+                //         "state":"California",
+                //         "county_province":null,
+                //         "postal_code":"92101-6618",
+                //         "country":"United States",
+                //         "longitude":"-117.129593",
+                //         "latitude":"32.714813",
+                //         "phone":"6195782311",
+                //         "website_url":"http://10barrel.com",
+                //         "updated_at":"2018-08-23T23:23:42.000Z",
+                //         "created_at":"2018-07-24T01:32:51.000Z"
+                //-----------------------------------------------------------
                 var recBreweryInfo = {
                     id : response.data[i].id,
                     name : response.data[i].name,
                     street : response.data[i].street,
                     city : response.data[i].city,
                     state : response.data[i].state,
-                    zip : response.data[i].zip,
+                    zip : response.data[i].postal_code,
                     phone : response.data[i].phone,
                     longitude: response.data[i].longitude,
                     latitude: response.data[i].latitude,
-                    websiteURL : response.data[i].websiteURL
+                    websiteURL : response.data[i].website_url
                 }
                 aBreweries.push( recBreweryInfo );
             }

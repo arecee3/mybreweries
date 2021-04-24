@@ -11,6 +11,14 @@ let aBreweries = [];
 // let currentQuestionIndex = 0;
 // let time = questions.length * 15;
 // let timerId;
+document.addEventListener('DOMContentLoaded', function() {
+    var options = "col s12 m5";
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems, options);
+    console.log( "[select] initialization completed..." );
+});    
+
+// ----------------------------------------------------------
 
 // by_postal response:
 // https://api.openbrewerydb.org/breweries?by_postal=92101
@@ -36,108 +44,38 @@ let aBreweries = [];
 //         "updated_at":"2018-08-23T23:23:42.000Z",
 //         "created_at":"2018-07-24T01:32:51.000Z"
 //     },
-//     {
-//         "id":8587,
-//         "obdb_id":"ballast-point-brewing-company-little-italy-san-diego",
-//         "name":"Ballast Point Brewing Company - Little Italy",
-//         "brewery_type":"large",
-//         "street":"2215 India St",
-//         "address_2":null,
-//         "address_3":null,
-//         "city":"San Diego",
-//         "state":"California",
-//         "county_province":null,
-//         "postal_code":"92101-1725",
-//         "country":"United States",
-//         "longitude":"-117.169738",
-//         "latitude":"32.727777",
-//         "phone":"6192557213",
-//         "website_url":"http://www.ballastpoint.com",
-//         "updated_at":"2018-08-23T23:24:51.000Z",
-//         "created_at":"2018-07-24T01:32:52.000Z"
-//     },
-//     {"id":11294,"obdb_id":"half-door-brewing-company-san-diego","name":"Half Door Brewing Company","brewery_type":"brewpub","street":"903 Island Ave","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-7227","country":"United States","longitude":"-117.156268","latitude":"32.710248","phone":null,"website_url":"http://www.halfdoorbrewing.com","updated_at":"2018-08-23T23:29:07.000Z","created_at":"2018-07-24T01:32:56.000Z"},{"id":11904,"obdb_id":"karl-strauss-brewing-co-downtown-san-diego","name":"Karl Strauss Brewing Co - Downtown","brewery_type":"brewpub","street":"1157 Columbia St","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-3511","country":"United States","longitude":"-117.1672838","latitude":"32.71730086","phone":"6192342739","website_url":"http://www.karlstrauss.com","updated_at":"2018-08-23T23:58:22.000Z","created_at":"2018-07-24T01:32:57.000Z"},
-    // {
-    //     "id":11990,
-    //     "obdb_id":"knotty-brewing-co-san-diego",
-    //     "name":"Knotty Brewing Co.",
-    //     "brewery_type":"micro",
-    //     "street":"842 Market St",
-    //     "address_2":null,
-    //     "address_3":null,
-    //     "city":"San Diego",
-    //     "state":"California"
-    //     "county_province":null,
-    //     "postal_code":"92101-6425",
-    //     "country":"United States",
-    //     "longitude":"-117.127434",
-    //     "latitude":"32.711658"
-    //     "phone":"6192694337"
-    //     "website_url":"http://www.knottybrewing.com",
-    //     "updated_at":"2018-08-23T23:58:36.000Z",
-    //     "created_at":"2018-07-24T01:32:57.000Z"
-    // },
-    // {"id":12695,"obdb_id":"mission-brewery-san-diego","name":"Mission Brewery","brewery_type":"micro","street":"1441 L St","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-8967","country":"United States","longitude":"-117.0682152","latitude":"32.6220746","phone":"6195440555","website_url":"http://www.missionbrewery.com","updated_at":"2018-08-23T23:59:36.000Z","created_at":"2018-07-24T01:32:58.000Z"},{"id":12734,"obdb_id":"monkey-paw-brewing-san-diego","name":"Monkey Paw Brewing","brewery_type":"micro","street":"807 16th St","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-6610","country":"United States","longitude":"-117.149375","latitude":"32.71384441","phone":"6198672226","website_url":"http://www.monkeypawbrewing.com","updated_at":"2018-08-23T23:59:41.000Z","created_at":"2018-07-24T01:32:58.000Z"},{"id":13790,"obdb_id":"resident-brewing-san-diego","name":"Resident Brewing","brewery_type":"micro","street":"411 C St","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-5105","country":"United States","longitude":"-117.1608785","latitude":"32.71667995","phone":"6197176622","website_url":"http://www.residentbrewing.com","updated_at":"2018-08-24T00:01:26.000Z","created_at":"2018-07-24T01:33:00.000Z"},{"id":14856,"obdb_id":"tenacious-brewing-company-san-diego","name":"Tenacious Brewing Company","brewery_type":"planning","street":null,"address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101","country":"United States","longitude":"-117.1627714","latitude":"32.7174209","phone":null,"website_url":null,"updated_at":"2018-08-24T00:03:45.000Z","created_at":"2018-07-24T01:33:02.000Z"},{"id":14893,"obdb_id":"the-bell-marker-san-diego","name":"The Bell Marker","brewery_type":"brewpub","street":"602 Broadway Ste 101","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-5449","country":"United States","longitude":"-117.0763473","latitude":"32.597261","phone":null,"website_url":"http://www.thebellmarker.com","updated_at":"2018-08-24T00:03:47.000Z","created_at":"2018-07-24T01:33:02.000Z"}
-// ]
 
-// by_postal=##### & by_type=micro response:
-// https://api.openbrewerydb.org/breweries?by_postal=92101&by_type=micro
-// 
-// [
-//     {
-//         "id":11990,
-//         "obdb_id":"knotty-brewing-co-san-diego",
-//         "name":"Knotty Brewing Co.",
-//         "brewery_type":"micro",
-//         "street":"842 Market St",
-//         "address_2":null,
-//         "address_3":null,
-//         "city":"San Diego",
-//         "state":"California",
-//         "county_province":null,
-//         "postal_code":"92101-6425",
-//         "country":"United States",
-//         "longitude":"-117.127434"
-//         "latitude":"32.711658"
-//         "phone":"6192694337",
-//         "website_url":"http://www.knottybrewing.com"
-//         "updated_at":"2018-08-23T23:58:36.000Z",
-//         "created_at":"2018-07-24T01:32:57.000Z"
-//     },
-//     {
-//         "id":12695,
-//         "obdb_id":"mission-brewery-san-diego",
-//         "name":"Mission Brewery",
-//         "brewery_type":"micro",
-//         "street":"1441 L St",
-//         "address_2":null,
-//         "address_3":null,
-//         "city":"San Diego",
-//         "state":"California",
-//         "county_province":null,
-//         "postal_code":"92101-8967",
-//         "country":"United States",
-//         "longitude":"-117.0682152",
-//         "latitude":"32.6220746",
-//         "phone":"6195440555",
-//         "website_url":"http://www.missionbrewery.com",
-//         "updated_at":"2018-08-23T23:59:36.000Z",
-//         "created_at":"2018-07-24T01:32:58.000Z"
-//     },
-//     {
-//         "id":12734,
-//         "obdb_id":"monkey-paw-brewing-san-diego","name":"Monkey Paw Brewing","brewery_type":"micro","street":"807 16th St","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-6610","country":"United States","longitude":"-117.149375","latitude":"32.71384441","phone":"6198672226","website_url":"http://www.monkeypawbrewing.com","updated_at":"2018-08-23T23:59:41.000Z","created_at":"2018-07-24T01:32:58.000Z"},{"id":13790,"obdb_id":"resident-brewing-san-diego","name":"Resident Brewing","brewery_type":"micro","street":"411 C St","address_2":null,"address_3":null,"city":"San Diego","state":"California","county_province":null,"postal_code":"92101-5105","country":"United States","longitude":"-117.1608785","latitude":"32.71667995","phone":"6197176622","website_url":"http://www.residentbrewing.com","updated_at":"2018-08-24T00:01:26.000Z","created_at":"2018-07-24T01:33:00.000Z"}
-// ]
-
-
-function getBreweryInfo( iBreweryIndex )
+function locateBreweryInfo( sBreweryName )
 {
+    var iBreweryIndex=-1;
+    for( var i=0; ( i < aBreweries.length ) && ( iBreweryIndex < 0 ) ; i++ )
+    {
+        if ( aBreweries[i].name === sBreweryName )
+            iBreweryIndex = i;
+    }
+    return( iBreweryIndex );
+}
 
+function getBreweryInfo( sBreweryName )
+{
+    if ( bDebugging )
+        console.log( "getBreweryInfo("+sBreweryName+")" );
+    var iIdx = locateBreweryInfo(sBreweryName);
+    
+    if ( iIdx >= 0 )
+    {
+        if ( bDebugging )
+            console.log( "Brewery [" + sBreweryName + "] clicked! : Index: [" + iIdx + "]" );
+        
+        var elCraftBeerHdrEl = document.getElementById( "beerHdr" );
+        if ( aBreweries[iIdx].name.length > 0 ) {
+            elCraftBeerHdrEl.innerHTML = aBreweries[iIdx].name;
+        }
+    }
 }
 
 function displayBrewerySearch( sZip2Search )
 {
-
     var elBreweryListEl = document.getElementById( "zipCodeSearch" );
     elBreweryListEl.innerHTML = "";
     
@@ -155,20 +93,24 @@ function displayBrewerySearch( sZip2Search )
         
         // Locate the zipCodeSearch form element so we can populate it with all breweries
         // found within that zip-code:
-        // var elBreweryListEl = document.getElementById("zipCodeSearch");
-        // elBreweryListEl.innerHTML = "";
 
         for( var i=0; i < aBreweries.length; i++ )
         {
-            let elBrewery = document.createElement( "input" );
-            elBrewery.setAttribute( "type", "text" );
-            elBrewery.setAttribute( "readonly", true );
-            // text-center:
-            elBrewery.setAttribute( "class", "form-control d-block bg-white" );
-            elBrewery.setAttribute( "value", aBreweries[i].name );
+            // <a class="waves-effect waves-light btn-large">Button</a>
+            let elBrewery = document.createElement( "a" );
+            elBrewery.setAttribute( "class", "col s12 waves-effect waves-light btn-large brewery-button" );
+            elBrewery.textContent = aBreweries[i].name;
+            
+            // let elBrewery = document.createElement( "input" );
+            // elBrewery.setAttribute( "type", "text" );
+            // elBrewery.setAttribute( "readonly", true );
+            // // text-center:
+            // elBrewery.setAttribute( "class", "form-control d-block bg-white" );
+            // elBrewery.setAttribute( "value", aBreweries[i].name );
+            
             elBrewery.addEventListener( "click", function()
             {
-                getBreweryInfo( elBrewery.value );
+                getBreweryInfo( elBrewery.textContent ); //.value );
             })
             elBreweryListEl.append( elBrewery );
         }
@@ -179,26 +121,38 @@ function displayBrewerySearch( sZip2Search )
 
 function runQuery( sZip2Query )
 {
+    if ( bDebugging )
+        console.log( "runQueryy("+sZip2Query+")" );
     var sZipToQuery = ( sZip2Query ? sZip2Query.trim() : "" );
     if ( sZipToQuery.length > 0 )
     {
-
         var elBreweryTypeEl = document.getElementById( "breweryType" );
         var sBreweryType = elBreweryTypeEl.value;
-        console.log( "breweryType: [" + sBreweryType + "]" );
+        if ( bDebugging )
+            console.log( "breweryType: [" + sBreweryType + "]" );
         var sUrlBreweryType = "";
         if ( sBreweryType !== "all_types" ) {
             sUrlBreweryType = "&by_type="+sBreweryType;
         }
-
+        
+        // elStateList
+        var elBreweryByStateEl = document.getElementById( "idBreweryState" );
+        if ( elBreweryByStateEl )
+        {
+            var sBreweryState = elBreweryByStateEl.value;
+            console.log( "State filter: [" + sBreweryState + "]" );
+        }
+        
         sURL = "https://api.openbrewerydb.org/breweries"
-                + "?by_postal=" + sZipToQuery
+                + "?"
+                // + "by_city=san%20diego"
+                // + "&by_state=california"
+                + "&by_postal=" + sZipToQuery
                 + sUrlBreweryType
                 ;
         
-        
         if ( bDebugging ) {
-            console.log( "=====================================================" );
+            console.log( "===========================================================================" );
             console.log( "Search URL: " + sURL );
         }
         
@@ -214,10 +168,6 @@ function runQuery( sZip2Query )
             }
             
             // ---------------------------------------------------------------------------------------------------------------------
-            
-            var elCraftBeerHdrEl = document.getElementById( "beerHdr" );
-            if ( response.data.length > 0 )
-                elCraftBeerHdrEl.innerHTML = response.data[0].name;
             
             var elCurrentPicEl = document.getElementById( "beerPic" );
             elCurrentPicEl.setAttribute( "src", "./assets/images/BeerMug(xSmall).jpg" );
@@ -236,6 +186,8 @@ function runQuery( sZip2Query )
                     state : response.data[i].state,
                     zip : response.data[i].zip,
                     phone : response.data[i].phone,
+                    longitude: response.data[i].longitude,
+                    latitude: response.data[i].latitude,
                     websiteURL : response.data[i].websiteURL
                 }
                 aBreweries.push( recBreweryInfo );
@@ -245,7 +197,6 @@ function runQuery( sZip2Query )
                 console.log( "Saving brewery info:" );
                 console.log( aBreweries );
             }
-            
             localStorage.setItem( locStorageKey, JSON.stringify(aBreweries) );
             
             displayBrewerySearch( sZipToQuery );
@@ -282,6 +233,38 @@ function start( sZip2Query )
     if ( aBreweries.length > 0 )
         displayBrewerySearch();
     
+    // Create a drop-down list of states to choose from:
+    // Objective:
+    //     <select name="breweryState" id="breweryState">
+    //         <option value="california">California</option>
+    //     </select>
+    // let elSearchByStateDiv = document.getElementById( "searchByState" );
+    // if ( elSearchByStateDiv )
+    // {
+    //     // <p class="mt-2 my-1"><strong>State:</strong></p>
+    //     var elStatePrefix = document.createElement( "p" );
+    //     elStatePrefix.setAttribute( "class", "mt-2 my-2" );
+    //     elStatePrefix.textContent = "State:";
+    //     elSearchByStateDiv.appendChild( elStatePrefix );
+
+    //     var elStateList = document.createElement( "select" );
+    //     elStateList.setAttribute( "name", "breweryState" );
+    //     elStateList.setAttribute( "id", "idBreweryState" );
+    //     // elStateList.setAttribute( "class", "form-control d-block bg-white" );
+    //     elSearchByStateDiv.appendChild( elStateList );
+        
+    //         var elState = document.createElement( "option" );
+    //         elState.setAttribute( "value", "california" );
+    //         elState.textContent = "California";
+    //         elStateList.appendChild( elState );
+
+    //         elState = document.createElement( "option" );
+    //         elState.setAttribute( "value", "texas" );
+    //         elState.textContent = "Texas";
+    //         elStateList.appendChild( elState );
+    // }
+
+    // =====================================================================================================
     // When the search button is clicked, 
     // locate all breweries associated to the zip code typed by the user:
     elSelectedZipcode.addEventListener( "click", function()
@@ -290,6 +273,9 @@ function start( sZip2Query )
         let sZipCode2Query = "";
         var sZipCodeInput = elZipCodeInput.value; // retrieve the user zip code input
         sZipCode2Query = sZipCodeInput.trim(); // remove any leading/trailing white space
+        if ( bDebugging )
+            console.log( "Zip2Search: [" + sZipCode2Query + "]" );
+        
         elZipCodeInput.value = "";  // clear the user input...
         elZipCodeInput.focus(); // place the cursor input back on the primary input field...
         
@@ -299,27 +285,20 @@ function start( sZip2Query )
                 console.log( "Obtaining breweries for: [" + sZipCode2Query + "]" );
             
             runQuery( sZipCode2Query );
-            
-            if ( bDebugging ) {
-                console.log( "Adding breweries for zip [" + sZipCode2Query + "]:" );
-                console.log( aBreweries );
-            }
-            
-            localStorage.setItem( locStorageKey, JSON.stringify(aBreweries) );
         }
-        
-        // if ( bDebugging )
-        //     console.log( "displaySearchHistory: elSelectedCity click()" );
-        // displaySearchHistory();
     })
+    // =====================================================================================================
     
+    // =====================================================================================================
     elClearBreweries.addEventListener( "click",function()
     {
+        console.log( "Clearing the search list!" );
         aBreweries = [];
         localStorage.clear();
         displayBrewerySearch();
-        window.location.replace("./index.html");
+        window.location.replace( "./index.html" );
     })
+    // =====================================================================================================
     
 }
 

@@ -4,6 +4,8 @@ let bDebugging = true;
 const locStorageKey = "BrewerySearchInfo";
 
 let aBreweries = [];
+let sLastZipSearched = "";
+let sLastBreweryType = "";
 
 
 
@@ -67,9 +69,57 @@ function getBreweryInfo( sBreweryName )
         if ( bDebugging )
             console.log( "Brewery [" + sBreweryName + "] clicked! : Index: [" + iIdx + "]" );
         
-        var elCraftBeerHdrEl = document.getElementById( "beerHdr" );
+        // var recBreweryInfo = {
+        //     id : response.data[i].id,
+        //     name : response.data[i].name,
+        //     street : response.data[i].street,
+        //     city : response.data[i].city,
+        //     state : response.data[i].state,
+        //     zip : response.data[i].zip,
+        //     phone : response.data[i].phone,
+        //     longitude: response.data[i].longitude,
+        //     latitude: response.data[i].latitude,
+        //     websiteURL : response.data[i].websiteURL
+        // }
+        
+        var elBreweryNameEl = document.getElementById( "idBreweryName" );
         if ( aBreweries[iIdx].name.length > 0 ) {
-            elCraftBeerHdrEl.innerHTML = aBreweries[iIdx].name;
+            elBreweryNameEl.textContent = aBreweries[iIdx].name;
+        }
+        
+        // idStreet
+        var elBreweryStreetEl = document.getElementById( "idStreet" );
+        if ( aBreweries[iIdx].street.length > 0 ) {
+            elBreweryStreetEl.textContent = aBreweries[iIdx].street;
+        }
+        
+        // idCityStateZip
+        var elBreweryCityStateZipEl = document.getElementById( "idCityStateZip" );
+        if ( aBreweries[iIdx].city && (aBreweries[iIdx].city.length > 0) )
+        {
+            var sCityStateZip = aBreweries[iIdx].city;
+            if ( aBreweries[iIdx].state && (aBreweries[iIdx].state.length > 0) )
+            {
+                sCityStateZip += ", " + aBreweries[iIdx].state;
+                if ( aBreweries[iIdx].zip && (aBreweries[iIdx].zip.length > 0) )
+                {
+                    sCityStateZip += "  " + aBreweries[iIdx].zip;
+                }
+            }
+            elBreweryCityStateZipEl.textContent = sCityStateZip;
+        }
+        
+        // idBreweryWebLink
+        var elBreweryWebUrlEl = document.getElementById( "idBreweryWebLink" );
+        elBreweryWebUrlEl.innerHTML = "";
+        if ( aBreweries[iIdx].websiteURL && (aBreweries[iIdx].websiteURL.length > 0) )
+        {
+            // <a id="idBreweryWebLink" href="#">Link to brewery website</a>
+            var elWebsiteURL = document.createElement( "a" );
+            elWebsiteURL.setAttribute( "id", "idBrewerySite" );
+            elWebsiteURL.setAttribute( "href", aBreweries[iIdx].websiteURL );
+            elWebsiteURL.textContent = "Display " + elBreweryNameEl.textContent+" website";
+            elBreweryWebUrlEl.appendChild( elWebsiteURL );
         }
     }
 }
@@ -94,19 +144,30 @@ function displayBrewerySearch( sZip2Search )
         // Locate the zipCodeSearch form element so we can populate it with all breweries
         // found within that zip-code:
 
+        var sLastBreweryName = "";
+        var iDuplicateCount = 0;
+        
         for( var i=0; i < aBreweries.length; i++ )
         {
             // <a class="waves-effect waves-light btn-large">Button</a>
             let elBrewery = document.createElement( "a" );
             elBrewery.setAttribute( "class", "col s12 waves-effect waves-light btn-large brewery-button" );
-            elBrewery.textContent = aBreweries[i].name;
             
-            // let elBrewery = document.createElement( "input" );
-            // elBrewery.setAttribute( "type", "text" );
-            // elBrewery.setAttribute( "readonly", true );
-            // // text-center:
-            // elBrewery.setAttribute( "class", "form-control d-block bg-white" );
-            // elBrewery.setAttribute( "value", aBreweries[i].name );
+            if ( (sLastBreweryName.length === 0) && (iDuplicateCount === 0) ) {
+                sLastBreweryName = aBreweries[i].name;
+            }
+            else if ( aBreweries[i].name === sLastBreweryName ) {
+                iDuplicateCount++;
+                var iBreweryNo = iDuplicateCount+1;
+                aBreweries[i].name += " ("+iBreweryNo+")";
+            }
+            else {
+                // reset:
+                iDuplicateCount = 0;
+                sLastBreweryName = aBreweries[i].name;
+            }
+            
+            elBrewery.textContent = aBreweries[i].name;
             
             elBrewery.addEventListener( "click", function()
             {
@@ -134,6 +195,8 @@ function runQuery( sZip2Query )
         if ( sBreweryType !== "all_types" ) {
             sUrlBreweryType = "&by_type="+sBreweryType;
         }
+        
+        sLastBreweryType = sBreweryType;
         
         // elStateList
         var elBreweryByStateEl = document.getElementById( "idBreweryState" );
@@ -178,17 +241,37 @@ function runQuery( sZip2Query )
             
             for( var i=0; i < response.data.length; i++ )
             {
+                //-----------------------------------------------------------
+                //         "id":8041,
+                //         "obdb_id":"10-barrel-brewing-co-san-diego",
+                //         "name":"10 Barrel Brewing Co",
+                //         "brewery_type":"large",
+                //         "street":"1501 E St",
+                //         "address_2":null,
+                //         "address_3":null,
+                //         "city":"San Diego",
+                //         "state":"California",
+                //         "county_province":null,
+                //         "postal_code":"92101-6618",
+                //         "country":"United States",
+                //         "longitude":"-117.129593",
+                //         "latitude":"32.714813",
+                //         "phone":"6195782311",
+                //         "website_url":"http://10barrel.com",
+                //         "updated_at":"2018-08-23T23:23:42.000Z",
+                //         "created_at":"2018-07-24T01:32:51.000Z"
+                //-----------------------------------------------------------
                 var recBreweryInfo = {
                     id : response.data[i].id,
                     name : response.data[i].name,
                     street : response.data[i].street,
                     city : response.data[i].city,
                     state : response.data[i].state,
-                    zip : response.data[i].zip,
+                    zip : response.data[i].postal_code,
                     phone : response.data[i].phone,
                     longitude: response.data[i].longitude,
                     latitude: response.data[i].latitude,
-                    websiteURL : response.data[i].websiteURL
+                    websiteURL : response.data[i].website_url
                 }
                 aBreweries.push( recBreweryInfo );
             }
@@ -284,6 +367,8 @@ function start( sZip2Query )
             if ( bDebugging )
                 console.log( "Obtaining breweries for: [" + sZipCode2Query + "]" );
             
+            sLastZipSearched = sZip2Query; // save in case we need to re-query...
+            
             runQuery( sZipCode2Query );
         }
     })
@@ -296,9 +381,200 @@ function start( sZip2Query )
         aBreweries = [];
         localStorage.clear();
         displayBrewerySearch();
+        sLastZipSearched = "";
+        sLastBreweryType = "";
         window.location.replace( "./index.html" );
     })
     // =====================================================================================================
-    
+
 }
 
+function loadMap() {
+  	// TO MAKE THE MAP APPEAR YOU MUST
+	// ADD YOUR ACCESS TOKEN FROM
+	// https://account.mapbox.com
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYWxlcGUyMSIsImEiOiJja250ZnpoeW4wMjZ1Mm5vM3J3eG5iYjhqIn0.Jq0X-ynV1cZgyuhuSph0dA';
+var map = new mapboxgl.Map({ 
+container: 'map',
+style: 'mapbox://styles/mapbox/streets-v11',
+center: [-117.161087,  32.715736],
+zoom: 10
+});
+/* Given a query in the form "lng, lat" or "lat, lng"
+* returns the matching geographic coordinate(s)
+* as search results in carmen geojson format,
+* https://github.com/mapbox/carmen/blob/master/carmen-geojson.md */
+
+
+
+
+map.on('load', function () {
+// Add a GeoJSON source with 2 points
+map.loadImage('assets/images/beermug.png'), 
+function (error, loadImage) {
+  if (error) throw error; 
+  map.addImage('custom-marker', image);
+}
+        map.addSource('places', {
+          'type': 'geojson',
+          'data': {
+            'type': 'FeatureCollection',
+            'features': [
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    '<strong>Make it Mount Pleasant</strong><p>Make it Mount Pleasant is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>'
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-116.9658891, 32.6230008]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    '<strong>Mad Men Season Five Finale Watch Party</strong><p>Head to Lounge 201 (201 Massachusetts Avenue NE) Sunday for a Mad Men Season Five Finale Watch Party, complete with 60s costume contest, Mad Men trivia, and retro food and drink. 8:00-11:00 p.m. $10 general admission, $20 admission and two hour open bar.</p>'
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-117.2499771118164,32.74620819091797 ]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    '<strong>Big Backyard Beach Bash and Wine Fest</strong><p>EatBar (2761 Washington Boulevard Arlington VA) is throwing a Big Backyard Beach Bash and Wine Fest on Saturday, serving up conch fritters, fish tacos and crab sliders, and Red Apron hot dogs. 12:00-3:00 p.m. $25.</p>'
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-117.1320793, 32.5807248]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    '<strong>Ballston Arts & Crafts Market</strong><p>The Ballston Arts & Crafts Market sets up shop next to the Ballston metro this Saturday for the first of five dates this summer. Nearly 35 artists and crafters will be on hand selling their wares. 10:00-4:00 p.m.</p>'
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-117.0806457, 32.6426603]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    "<strong>Seersucker Bike Ride and Social</strong><p>Feeling dandy? Get fancy, grab your bike, and take part in this year's Seersucker Social bike ride from Dandies and Quaintrelles. After the ride enjoy a lawn party at Hillwood with jazz, cocktails, paper hat-making, and more. 11:00-7:00 p.m.</p>"
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-117.07943725585938, 32.6401252746582]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    '<strong>Capital Pride Parade</strong><p>The annual Capital Pride Parade makes its way through Dupont this Saturday. 4:30 p.m. Free.</p>'
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-116.9717023,32.8120347 ]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    '<strong>Muhsinah</strong><p>Jazz-influenced hip hop artist Muhsinah plays the Black Cat (1811 14th Street NW) tonight with Exit Clov and Gods’illa. 9:00 p.m. $12.</p>'
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-116.95609283447266, 32.79490661621094]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    "<strong>A Little Night Music</strong><p>The Arlington Players' production of Stephen Sondheim's <em>A Little Night Music</em> comes to the Kogod Cradle at The Mead Center for American Theater (1101 6th Street SW) this weekend and next. 8:00 p.m.</p>"
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-117.1434555053711, 32.70732879638672]
+                }
+              },
+              {
+                'type': 'Feature',
+                'properties': {
+                  'description':
+                    '<strong>Truckeroo</strong><p>Truckeroo brings dozens of food trucks, live music, and games to half and M Street SE (across from Navy Yard Metro Station) today from 11:00 a.m. to 11:00 p.m.</p>'
+                },
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-117.169738, 32.727777]
+                }
+              }
+            ]
+          }
+        });
+
+        // Add a layer showing the places.
+        map.addLayer({
+          'id': 'places',
+          'type': 'circle',
+          'source': 'places',
+          'paint': {
+            'circle-color': '#4264fb',
+            'circle-radius': 6,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff'
+            
+
+
+
+          }
+        });
+
+        // Create a popup, but don't add it to the map yet.
+        var popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false
+        });
+
+        map.on('mouseenter', 'places', function (e) {
+          // Change the cursor style as a UI indicator.
+          map.getCanvas().style.cursor = 'pointer';
+
+          var coordinates = e.features[0].geometry.coordinates.slice();
+          var description = e.features[0].properties.description;
+
+          // Ensure that if the map is zoomed out such that multiple
+          // copies of the feature are visible, the popup appears
+          // over the copy being pointed to.
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          // Populate the popup and set its coordinates
+          // based on the feature found.
+          popup.setLngLat(coordinates).setHTML(description).addTo(map);
+        });
+        
+        map.on('mouseleave', 'places', function () {
+          map.getCanvas().style.cursor = '';
+          popup.remove();
+          map.on('load', function() {
+
+  });
+        });
+      })
+
+}
+
+loadMap();
+start("");

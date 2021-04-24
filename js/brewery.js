@@ -5,6 +5,12 @@ const locStorageKey = "BrewerySearchInfo";
 
 let aBreweries = [];
 
+
+
+// variables to keep track of quiz state
+// let currentQuestionIndex = 0;
+// let time = questions.length * 15;
+// let timerId;
 document.addEventListener('DOMContentLoaded', function() {
     var options = "col s12 m5";
     var elems = document.querySelectorAll('select');
@@ -296,4 +302,3 @@ function start( sZip2Query )
     
 }
 
-start( "" );

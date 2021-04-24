@@ -4,6 +4,8 @@ let bDebugging = true;
 const locStorageKey = "BrewerySearchInfo";
 
 let aBreweries = [];
+let sLastZipSearched = "";
+let sLastBreweryType = "";
 
 document.addEventListener('DOMContentLoaded', function() {
     var options = "col s12 m5";
@@ -135,19 +137,30 @@ function displayBrewerySearch( sZip2Search )
         // Locate the zipCodeSearch form element so we can populate it with all breweries
         // found within that zip-code:
 
+        var sLastBreweryName = "";
+        var iDuplicateCount = 0;
+        
         for( var i=0; i < aBreweries.length; i++ )
         {
             // <a class="waves-effect waves-light btn-large">Button</a>
             let elBrewery = document.createElement( "a" );
             elBrewery.setAttribute( "class", "col s12 waves-effect waves-light btn-large brewery-button" );
-            elBrewery.textContent = aBreweries[i].name;
             
-            // let elBrewery = document.createElement( "input" );
-            // elBrewery.setAttribute( "type", "text" );
-            // elBrewery.setAttribute( "readonly", true );
-            // // text-center:
-            // elBrewery.setAttribute( "class", "form-control d-block bg-white" );
-            // elBrewery.setAttribute( "value", aBreweries[i].name );
+            if ( (sLastBreweryName.length === 0) && (iDuplicateCount === 0) ) {
+                sLastBreweryName = aBreweries[i].name;
+            }
+            else if ( aBreweries[i].name === sLastBreweryName ) {
+                iDuplicateCount++;
+                var iBreweryNo = iDuplicateCount+1;
+                aBreweries[i].name += " ("+iBreweryNo+")";
+            }
+            else {
+                // reset:
+                iDuplicateCount = 0;
+                sLastBreweryName = aBreweries[i].name;
+            }
+            
+            elBrewery.textContent = aBreweries[i].name;
             
             elBrewery.addEventListener( "click", function()
             {
@@ -175,6 +188,8 @@ function runQuery( sZip2Query )
         if ( sBreweryType !== "all_types" ) {
             sUrlBreweryType = "&by_type="+sBreweryType;
         }
+        
+        sLastBreweryType = sBreweryType;
         
         // elStateList
         var elBreweryByStateEl = document.getElementById( "idBreweryState" );
@@ -345,6 +360,8 @@ function start( sZip2Query )
             if ( bDebugging )
                 console.log( "Obtaining breweries for: [" + sZipCode2Query + "]" );
             
+            sLastZipSearched = sZip2Query; // save in case we need to re-query...
+            
             runQuery( sZipCode2Query );
         }
     })
@@ -357,6 +374,8 @@ function start( sZip2Query )
         aBreweries = [];
         localStorage.clear();
         displayBrewerySearch();
+        sLastZipSearched = "";
+        sLastBreweryType = "";
         window.location.replace( "./index.html" );
     })
     // =====================================================================================================

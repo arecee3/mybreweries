@@ -14,3 +14,4 @@ to make an appliction that will give nearest brewery location and information (b
 ## app functionality
 to make the website more dynamic we have implmented a drop-down menu so the user can specify which criteria best suits for desired search. User must enter at least one choice to run the script, the script will run when a user selects criteria then desired zip code and clicks "search button" the search functionalty will get real time information       using the brewery API database, it will display breweries by zipcode along with brewery information. This is also where our 2nd third party API starts to function, in this case mapbox API is used to display map with with breweries. 
 
+![](assets/images/screenshot-1.JPG) 

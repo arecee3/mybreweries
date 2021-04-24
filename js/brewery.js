@@ -164,7 +164,7 @@ function runQuery( sZip2Query )
             // ---------------------------------------------------------------------------------------------------------------------
             
             var elCurrentPicEl = document.getElementById( "beerPic" );
-            elCurrentPicEl.setAttribute( "src", "./assets/images/BeerMug(xSmall).jpg" );
+            elCurrentPicEl.setAttribute( "src", "./assets/images/pint.png" );
             elCurrentPicEl.setAttribute ("alt", "Beer Mug" );
 
             if ( bDebugging )

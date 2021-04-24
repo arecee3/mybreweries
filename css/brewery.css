@@ -5,6 +5,12 @@
   font-size: large;
 }
 
+body #map {
+  position: absolute;
+  height: 600px;
+  width: 100%;
+}
+
 h1 {
   background-color: var(--dark-blue);
   color: var(--white);

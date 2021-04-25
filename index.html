@@ -2,33 +2,26 @@
 <html lang="en-us">
 
 <head>  
-  
-  <meta charset="UTF-8">
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
   
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
  
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  
-  
-  <!-- Font Awesome CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 
-  <link rel="stylesheet" href="./css/brewery.css">
- 
- 
+    <link rel="stylesheet" href="./css/brewery.css">
 
-  <title>MicroBrew Crawler</title>
+    <title>MicroBrew Crawler</title>
 </head>
 
 <body>
 
-
-    
   <header>
     <h1 class="app-header w-100 text-center">
       Brewery Crawler
@@ -36,38 +29,37 @@
   </header>
   
   <div class="container">
-  
-    
-        <div class="row">
-            <div class="col s12 m12">
-              <div class="card blue-grey darken-1">
-    
-                <div class="card-content white-text">
-                  
-                  <div class="row">
-                    <div class="col s6 m6">
-                      <img id="beerPic" 
-                        src=".\assets\images\BeerMug(xSmall).jpg"
-                        alt="Beer Mug Picture">
-                    </div>
-                    <div class="col s6 m6">
-                      <span id="idBreweryName" class="card-title">Brewery Info</span>
-                    </div>
-                  </div>
-    
-                  <p>
-                      <div id="idStreet"></div>
-                      <div id="idCityStateZip"></div>
-                  </p>
-                  
+
+    <div class="row">
+        <div class="col s12 m12">
+          <div class="card blue-grey darken-1">
+
+            <div class="card-content white-text">
+              
+              <div class="row">
+                <div class="col s6 m6 l2">
+                  <img id="beerPic" 
+                    src=".\assets\images\BeerMug(xSmall).jpg"
+                    alt="Beer Mug Picture">
                 </div>
-    
-                <div id="idBreweryWebLink" class="card-action">
+                <div class="col s6 m6 l10">
+                  <span id="idBreweryName" class="card-title">Brewery Info</span>
                 </div>
-    
               </div>
-            </div> <!-- col s12 m12 -->
-        </div> <!-- row -->
+
+              <p>
+                  <div id="idStreet"></div>
+                  <div id="idCityStateZip"></div>
+              </p>
+              
+            </div>
+
+            <div id="idBreweryWebLink" class="card-action">
+            </div>
+
+          </div>
+        </div> <!-- col s12 m12 -->
+    </div> <!-- row -->
     
     <div class="row">
         
@@ -137,16 +129,31 @@
         <div class="col s12 m6">
             
             <div class="row">
-                <div class="col s12 m6">
-                    <span id="beerHdr" class="zip-code-name align-middle"></span>
+                <div class="col s12 m12">
+                    
+                    <!-- <span id="beerHdr" class="zip-code-name align-middle"></span>
                     <img id="beerPic" 
                         src=".\assets\images\BeerMug.jpg"
-                        alt="Beer Mug Picture">
+                        alt="Beer Mug Picture"> -->
+                    
+                    <div class="idBreweryMap">
+                      <div id="map-container" style="position:relative;width: 100%;height: 600px;">
+                        <div id="map" style="position:absolute;width:100%">
+                        </div>
+                        <style>
+                          body #map 
+                          { 
+                            position: absolute; height: 600px; width: 100%;
+                          }
+                        </style>
+                      </div>
+                    </div>
+                    
                 </div>
-            </div>
-            
-        </div> <!-- col-5 -->
-        
+                
+            </div> <!-- col-5 -->
+        </div>
+
         <!-- ==================================================================================================================================== -->
     
     </div> <!-- class <row> -->
@@ -154,14 +161,15 @@
     </div> <!-- class container -->
 
   </div> <!-- class container -->
-  <div id="map-container" style="position:relative;width: 100%;height: 600px;">
+
+  <!-- <div id="map-container" style="position:relative;width: 100%;height: 600px;">
     <div id="map" style="position:absolute;width:100%">
-    </div>
-    <style>
-      body #map 
-      { 
-        position: absolute; height: 600px; width: 100%; }
-      </style>
+  </div>
+  <style>
+    body #map 
+    { 
+      position: absolute; height: 600px; width: 100%; }
+  </style> -->
 
   <!-- Optional JavaScript; choose one of the two! -->
 

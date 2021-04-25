@@ -14,12 +14,21 @@ body #map {
 h1 {
   background-color: var(--dark-blue);
   color: var(--white);
+  text-align: center;
 }
 
 p {
   margin: 2px 2px;
   padding: 1px 1px;
   font-weight: bold;
+}
+
+#idBreweryName {
+  font-size: 48px;
+}
+
+.idBreweryMap {
+  margin-top: 1px;
 }
 
 .zip-code-name {
@@ -78,7 +87,15 @@ body {
 /* ------------------------------ */
 /* --- Need to be responsive: --- */
 /* ------------------------------ */
-@media screen and (max-width: 575px)
+
+@media screen and (max-width: 800px)
+{
+  #idBreweryName {
+    font-size: 36px;
+  }
+}
+
+@media screen and (max-width: 600px)
 {
   h1 {
     font-size: 36px;
@@ -89,5 +106,8 @@ body {
     margin-right: 1%;
     padding-left: 2%;
     padding-right: 2%;
+  }
+  .idBreweryMap {
+    margin-top: 20px;
   }
 }

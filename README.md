@@ -1,6 +1,12 @@
 ## Overview
 With a group we are supposed to create a working application/website using at least 2 third parties AP, along with using a third party CSS framework & styling. We are to work together and deligate tasks and update workflow using git-hubs branches and merging capabilities. 
 
+### The active link to the Brewery Crawler app:
+[Brewery Crawler app](https://arecee3.github.io/mybreweries/)
+
+### Our gitHub for this project:
+[Brewery Crawler GitHub](https://github.com/arecee3/mybreweries)
+
 ## Run down
 to make an appliction that will give nearest brewery location and information (brewery name web address etc.) by user zip code, also display location on map to display application results.
 

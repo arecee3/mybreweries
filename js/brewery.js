@@ -26,8 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var options = "col s12 m5";
     var elems = document.querySelectorAll('select');
     var instances = M.FormSelect.init(elems, options);
-    console.log( "[select] initialization completed..." );
-});    
+    if ( bDebugging )
+      console.log( "[select] initialization completed..." );
+});
 
 // ----------------------------------------------------------
 

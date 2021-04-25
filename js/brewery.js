@@ -8,6 +8,15 @@ let sLastZipSearched = "";
 let sLastBreweryType = "";
 
 
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWxlcGUyMSIsImEiOiJja250ZnpoeW4wMjZ1Mm5vM3J3eG5iYjhqIn0.Jq0X-ynV1cZgyuhuSph0dA';
+var map = new mapboxgl.Map({ 
+container: 'map',
+style: 'mapbox://styles/mapbox/streets-v11',
+center: [-117.161087,  32.715736],
+zoom: 10
+});
+
+
 
 // variables to keep track of quiz state
 // let currentQuestionIndex = 0;
@@ -46,6 +55,71 @@ document.addEventListener('DOMContentLoaded', function() {
 //         "updated_at":"2018-08-23T23:23:42.000Z",
 //         "created_at":"2018-07-24T01:32:51.000Z"
 //     },
+
+function generateSource(detailResultsArray, sourceExist){
+  /*
+  {
+                    id : response.data[i].id,
+                    name : response.data[i].name,
+                    street : response.data[i].street,
+                    city : response.data[i].city,
+                    state : response.data[i].state,
+                    zip : response.data[i].postal_code,
+                    phone : response.data[i].phone,
+                    longitude: response.data[i].longitude,
+                    latitude: response.data[i].latitude,
+                    websiteURL : response.data[i].website_url
+                }
+  
+  */
+  console.log(detailResultsArray)
+  var featuresArray =[]
+  for (let index = 0; index< detailResultsArray.length; index++){
+    const element = detailResultsArray[index];
+
+   // var link = new URL(element.result.recBreweryInfo)
+   // var params = new URLSearchParams(link.search)
+    var coordinates =[Number(element.longitude), Number(element.latitude)]
+
+    //console.log(coordinates)
+   // console.log(element.recBreweryInfo)
+    //console.log(element)
+    var featureObject = {
+      'type': 'Feature',
+      'properties': {
+      'description':`<strong>${element.name}</strong>`
+      },
+      'geometry': {
+      'type' : 'Point',
+      'coordinates': coordinates
+      }
+    }
+    featuresArray.push(featureObject)
+
+  }
+
+  if (sourceExist) {
+    console.log(featuresArray)
+    return {
+      'type': 'FeatureCollection',
+      'features': featuresArray
+    }
+  }else {
+    
+  var sourceGeojson = {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+   features: featuresArray
+    }
+  }
+  
+
+  return sourceGeojson
+
+
+  }
+}
 
 function locateBreweryInfo( sBreweryName )
 {
@@ -283,7 +357,27 @@ function runQuery( sZip2Query )
             localStorage.setItem( locStorageKey, JSON.stringify(aBreweries) );
             
             displayBrewerySearch( sZipToQuery );
-            
+          
+
+            if (map.getSource("places")){
+             
+              map.getSource('places').setData(generateSource(aBreweries, true))
+            } else {
+              map.addSource('places', generateSource(aBreweries))
+
+            map.addLayer({
+                'id': 'places',
+                'type': 'circle',
+                'source': 'places',
+                'paint': {
+                  'circle-color': '#4264fb',
+                  'circle-radius': 6,
+                  'circle-stroke-width': 2,
+                  'circle-stroke-color': '#ffffff'
+                }
+              });
+            }
+
             // ---------------------------------------------------------------------------------------------------------------------
             
         }) // endThen axios.get response for a zip-code
@@ -393,13 +487,15 @@ function loadMap() {
   	// TO MAKE THE MAP APPEAR YOU MUST
 	// ADD YOUR ACCESS TOKEN FROM
 	// https://account.mapbox.com
+  /*
 	mapboxgl.accessToken = 'pk.eyJ1IjoiYWxlcGUyMSIsImEiOiJja250ZnpoeW4wMjZ1Mm5vM3J3eG5iYjhqIn0.Jq0X-ynV1cZgyuhuSph0dA';
-var map = new mapboxgl.Map({ 
+ map = new mapboxgl.Map({ 
 container: 'map',
 style: 'mapbox://styles/mapbox/streets-v11',
 center: [-117.161087,  32.715736],
 zoom: 10
 });
+*/
 /* Given a query in the form "lng, lat" or "lat, lng"
 * returns the matching geographic coordinate(s)
 * as search results in carmen geojson format,
@@ -410,118 +506,19 @@ zoom: 10
 
 map.on('load', function () {
 // Add a GeoJSON source with 2 points
-map.loadImage('assets/images/beermug.png'), 
+/*
+map.loadImage('https://png.pngtree.com/element_pic/17/01/05/07dcdf530dd354f88c26f64a5ef71e8a.jpg'), 
 function (error, loadImage) {
   if (error) throw error; 
   map.addImage('custom-marker', image);
 }
-        map.addSource('places', {
-          'type': 'geojson',
-          'data': {
-            'type': 'FeatureCollection',
-            'features': [
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    '<strong>Make it Mount Pleasant</strong><p>Make it Mount Pleasant is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>'
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-116.9658891, 32.6230008]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    '<strong>Mad Men Season Five Finale Watch Party</strong><p>Head to Lounge 201 (201 Massachusetts Avenue NE) Sunday for a Mad Men Season Five Finale Watch Party, complete with 60s costume contest, Mad Men trivia, and retro food and drink. 8:00-11:00 p.m. $10 general admission, $20 admission and two hour open bar.</p>'
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-117.2499771118164,32.74620819091797 ]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    '<strong>Big Backyard Beach Bash and Wine Fest</strong><p>EatBar (2761 Washington Boulevard Arlington VA) is throwing a Big Backyard Beach Bash and Wine Fest on Saturday, serving up conch fritters, fish tacos and crab sliders, and Red Apron hot dogs. 12:00-3:00 p.m. $25.</p>'
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-117.1320793, 32.5807248]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    '<strong>Ballston Arts & Crafts Market</strong><p>The Ballston Arts & Crafts Market sets up shop next to the Ballston metro this Saturday for the first of five dates this summer. Nearly 35 artists and crafters will be on hand selling their wares. 10:00-4:00 p.m.</p>'
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-117.0806457, 32.6426603]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    "<strong>Seersucker Bike Ride and Social</strong><p>Feeling dandy? Get fancy, grab your bike, and take part in this year's Seersucker Social bike ride from Dandies and Quaintrelles. After the ride enjoy a lawn party at Hillwood with jazz, cocktails, paper hat-making, and more. 11:00-7:00 p.m.</p>"
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-117.07943725585938, 32.6401252746582]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    '<strong>Capital Pride Parade</strong><p>The annual Capital Pride Parade makes its way through Dupont this Saturday. 4:30 p.m. Free.</p>'
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-116.9717023,32.8120347 ]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    '<strong>Muhsinah</strong><p>Jazz-influenced hip hop artist Muhsinah plays the Black Cat (1811 14th Street NW) tonight with Exit Clov and Gods’illa. 9:00 p.m. $12.</p>'
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-116.95609283447266, 32.79490661621094]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    "<strong>A Little Night Music</strong><p>The Arlington Players' production of Stephen Sondheim's <em>A Little Night Music</em> comes to the Kogod Cradle at The Mead Center for American Theater (1101 6th Street SW) this weekend and next. 8:00 p.m.</p>"
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-117.1434555053711, 32.70732879638672]
-                }
-              },
-              {
-                'type': 'Feature',
-                'properties': {
-                  'description':
-                    '<strong>Truckeroo</strong><p>Truckeroo brings dozens of food trucks, live music, and games to half and M Street SE (across from Navy Yard Metro Station) today from 11:00 a.m. to 11:00 p.m.</p>'
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [-117.169738, 32.727777]
-                }
-              }
-            ]
-          }
-        });
+*/
+
+
+
+
+map.addSource('places', generateSource(aBreweries) );
+
 
         // Add a layer showing the places.
         map.addLayer({
@@ -539,6 +536,7 @@ function (error, loadImage) {
 
           }
         });
+
 
         // Create a popup, but don't add it to the map yet.
         var popup = new mapboxgl.Popup({

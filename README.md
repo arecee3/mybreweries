@@ -1,5 +1,11 @@
 ## Overview
-With a group we are supposed to create a working application/website using at least 2 third parties AP, along with using a third party CSS framework & styling. We are to work together and deligate tasks and update workflow using git-hubs branches and merging capabilities. 
+With a group we are supposed to create a working application/website using at least 2 third parties AP, along with using a third party CSS framework & styling. We are to work together and deligate tasks and update workflow using git-hubs branches and merging capabilities.
+
+### The Project Presentation video:
+[Project Brewery Crawler Presentation](https://youtu.be/ddCq4uZ4Z5M)
+
+### The Project Presentation SlideShow:
+[The Brewery Crawler Slideshow](https://docs.google.com/presentation/d/1OPen-5nErSKnakDWRMNVYEL_i9Kgt6P76AvBUQKkM6I/edit?usp=sharing)
 
 ### The active link to the Brewery Crawler app:
 [Brewery Crawler app](https://arecee3.github.io/mybreweries/)

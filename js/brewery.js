@@ -1,5 +1,5 @@
 
-let bDebugging = true;
+let bDebugging = false;
 
 const locStorageKey = "BrewerySearchInfo";
 
@@ -73,7 +73,9 @@ function generateSource(detailResultsArray, sourceExist){
                 }
   
   */
-  console.log(detailResultsArray)
+  if ( bDebugging )
+    console.log(detailResultsArray)
+  
   var featuresArray =[]
   for (let index = 0; index< detailResultsArray.length; index++){
     const element = detailResultsArray[index];
@@ -100,7 +102,8 @@ function generateSource(detailResultsArray, sourceExist){
   }
 
   if (sourceExist) {
-    console.log(featuresArray)
+    if ( bDebugging )
+      console.log(featuresArray)
     return {
       'type': 'FeatureCollection',
       'features': featuresArray
@@ -224,9 +227,9 @@ function displayBrewerySearch( sZip2Search )
         
         for( var i=0; i < aBreweries.length; i++ )
         {
-            // <a class="waves-effect waves-light btn-large">Button</a>
             let elBrewery = document.createElement( "a" );
-            elBrewery.setAttribute( "class", "col s12 waves-effect waves-light btn-large brewery-button" );
+            elBrewery.setAttribute( "href", "#idBreweryCard" ); // add hyperlink to jump to the top...
+            elBrewery.setAttribute( "class", "col s12 waves-effect waves-teal btn-large brewery-button" );
             
             if ( (sLastBreweryName.length === 0) && (iDuplicateCount === 0) ) {
                 sLastBreweryName = aBreweries[i].name;

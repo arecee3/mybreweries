@@ -28,7 +28,11 @@ p {
 }
 
 #idBreweryName {
-  font-size: 48px;
+  font-size: 40px;
+}
+
+#idBreweryCriteria {
+  text-align: center;
 }
 
 .idBreweryMap {
@@ -43,6 +47,9 @@ p {
   margin-top: 10px;
 }
 
+.divider {
+  margin-bottom: 10px;
+}
 
 body {
     font-family: Arial;
@@ -67,14 +74,14 @@ body {
 @media screen and (max-width: 800px)
 {
   #idBreweryName {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 @media screen and (max-width: 575px)
 {
   h1 {
-    font-size: 36px;
+    font-size: 28px;
   }
   .container {
     min-width: 320px;

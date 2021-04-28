@@ -2,21 +2,19 @@
 let bDebugging = false;
 
 const locStorageKey = "BrewerySearchInfo";
+const locStorageZipKey = "BrewerySearchZip";
 
 let aBreweries = [];
 let sLastZipSearched = "";
 let sLastBreweryType = "";
 
-
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWxlcGUyMSIsImEiOiJja250ZnpoeW4wMjZ1Mm5vM3J3eG5iYjhqIn0.Jq0X-ynV1cZgyuhuSph0dA';
 var map = new mapboxgl.Map({ 
-container: 'map',
-style: 'mapbox://styles/mapbox/streets-v11',
-center: [-117.161087,  32.715736],
-zoom: 10
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-117.161087,  32.715736],
+    zoom: 10
 });
-
-
 
 // variables to keep track of quiz state
 // let currentQuestionIndex = 0;
@@ -219,6 +217,9 @@ function displayBrewerySearch( sZip2Search )
             console.log( aBreweries );
         }
         
+        if ( sZip2Search.length > 0 )
+            sLastZipSearched = sZip2Search;
+        
         // Locate the zipCodeSearch form element so we can populate it with all breweries
         // found within that zip-code:
 
@@ -261,7 +262,7 @@ function displayBrewerySearch( sZip2Search )
 function runQuery( sZip2Query )
 {
     if ( bDebugging )
-        console.log( "runQueryy("+sZip2Query+")" );
+        console.log( "runQuery("+sZip2Query+")" );
     var sZipToQuery = ( sZip2Query ? sZip2Query.trim() : "" );
     if ( sZipToQuery.length > 0 )
     {
@@ -275,6 +276,7 @@ function runQuery( sZip2Query )
         }
         
         sLastBreweryType = sBreweryType;
+        sLastZipSearched = sZip2Query;
         
         // elStateList
         var elBreweryByStateEl = document.getElementById( "idBreweryState" );
@@ -362,24 +364,24 @@ function runQuery( sZip2Query )
             
             displayBrewerySearch( sZipToQuery );
           
-
-            if (map.getSource("places")){
-             
-              map.getSource('places').setData(generateSource(aBreweries, true))
-            } else {
-              map.addSource('places', generateSource(aBreweries))
-
-            map.addLayer({
-                'id': 'places',
-                'type': 'circle',
-                'source': 'places',
-                'paint': {
-                  'circle-color': '#4264fb',
-                  'circle-radius': 6,
-                  'circle-stroke-width': 2,
-                  'circle-stroke-color': '#ffffff'
-                }
-              });
+            if ( map.getSource("places") )
+            {
+                map.getSource('places').setData(generateSource(aBreweries, true))
+            }
+            else
+            {
+                map.addSource( 'places', generateSource(aBreweries) );
+                map.addLayer({
+                    'id': 'places',
+                    'type': 'circle',
+                    'source': 'places',
+                    'paint': {
+                        'circle-color': '#4264fb',
+                        'circle-radius': 6,
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
             }
 
             // ---------------------------------------------------------------------------------------------------------------------
@@ -405,6 +407,7 @@ function start( sZip2Query )
 {
     // https://api.openbrewerydb.org/breweries?by_postal=92101&by_type=micro
     
+    let elSelectedBreweryType = document.getElementById( "breweryType" );
     let elSelectedZipcode = document.getElementById( "btnZipSearch" );
     let elClearBreweries = document.getElementById( "btnClearList" );
     
@@ -412,7 +415,7 @@ function start( sZip2Query )
     if ( bDebugging )
         console.log( "START: Found a list of [" + aBreweries.length + "] breweries from the last search!" );
     if ( aBreweries.length > 0 )
-        displayBrewerySearch();
+        displayBrewerySearch(sZip2Query);
     
     // Create a drop-down list of states to choose from:
     // Objective:
@@ -465,12 +468,30 @@ function start( sZip2Query )
             if ( bDebugging )
                 console.log( "Obtaining breweries for: [" + sZipCode2Query + "]" );
             
-            sLastZipSearched = sZip2Query; // save in case we need to re-query...
-            
-            runQuery( sZipCode2Query );
+            sLastZipSearched = sZipCode2Query; // save in case we need to re-query...
+            localStorage.setItem( locStorageZipKey, JSON.stringify(sLastZipSearched) );
+
+            runQuery( sLastZipSearched );
         }
     })
     // =====================================================================================================
+    
+    elSelectedBreweryType.onchange = 
+    function()
+    {
+        var sBreweryType = elSelectedBreweryType.value;
+        if ( bDebugging )
+        {
+            console.log( "Brewery Type change detected!" );
+            console.log( "New brewery type [" + sBreweryType + "] chosen for zip-code: [" + sLastZipSearched + "]" );
+        }
+        
+        if ( sLastZipSearched.length > 0 )
+        {
+            runQuery( sLastZipSearched );
+        }
+    
+    };
     
     // =====================================================================================================
     elClearBreweries.addEventListener( "click",function()
@@ -487,96 +508,97 @@ function start( sZip2Query )
 
 }
 
-function loadMap() {
+function loadMap()
+{
   	// TO MAKE THE MAP APPEAR YOU MUST
 	// ADD YOUR ACCESS TOKEN FROM
 	// https://account.mapbox.com
-  /*
-	mapboxgl.accessToken = 'pk.eyJ1IjoiYWxlcGUyMSIsImEiOiJja250ZnpoeW4wMjZ1Mm5vM3J3eG5iYjhqIn0.Jq0X-ynV1cZgyuhuSph0dA';
- map = new mapboxgl.Map({ 
-container: 'map',
-style: 'mapbox://styles/mapbox/streets-v11',
-center: [-117.161087,  32.715736],
-zoom: 10
-});
-*/
-/* Given a query in the form "lng, lat" or "lat, lng"
-* returns the matching geographic coordinate(s)
-* as search results in carmen geojson format,
-* https://github.com/mapbox/carmen/blob/master/carmen-geojson.md */
+    
+    /*
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWxlcGUyMSIsImEiOiJja250ZnpoeW4wMjZ1Mm5vM3J3eG5iYjhqIn0.Jq0X-ynV1cZgyuhuSph0dA';
+        map = new mapboxgl.Map({ 
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-117.161087,  32.715736],
+            zoom: 10
+        });
+    */
 
+    /* Given a query in the form "lng, lat" or "lat, lng"
+     * returns the matching geographic coordinate(s)
+     * as search results in carmen geojson format,
+     * https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
+    */
 
+    map.on( 'load', function()
+    {
+        // Add a GeoJSON source with 2 points
+        /*
+            map.loadImage('https://png.pngtree.com/element_pic/17/01/05/07dcdf530dd354f88c26f64a5ef71e8a.jpg'),
+            function (error, loadImage) {
+                if (error) throw error; 
+                map.addImage('custom-marker', image);
+            }
+        */
 
-
-map.on('load', function () {
-// Add a GeoJSON source with 2 points
-/*
-map.loadImage('https://png.pngtree.com/element_pic/17/01/05/07dcdf530dd354f88c26f64a5ef71e8a.jpg'), 
-function (error, loadImage) {
-  if (error) throw error; 
-  map.addImage('custom-marker', image);
-}
-*/
-
-
-
-
-map.addSource('places', generateSource(aBreweries) );
-
+        map.addSource('places', generateSource(aBreweries) );
 
         // Add a layer showing the places.
         map.addLayer({
-          'id': 'places',
-          'type': 'circle',
-          'source': 'places',
-          'paint': {
-            'circle-color': '#4264fb',
-            'circle-radius': 6,
-            'circle-stroke-width': 2,
-            'circle-stroke-color': '#ffffff'
-            
-
-
-
-          }
+            'id': 'places',
+            'type': 'circle',
+            'source': 'places',
+            'paint': {
+                'circle-color': '#4264fb',
+                'circle-radius': 6,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#ffffff'
+            }
         });
-
 
         // Create a popup, but don't add it to the map yet.
         var popup = new mapboxgl.Popup({
-          closeButton: false,
-          closeOnClick: false
+            closeButton: false,
+            closeOnClick: false
         });
 
-        map.on('mouseenter', 'places', function (e) {
-          // Change the cursor style as a UI indicator.
-          map.getCanvas().style.cursor = 'pointer';
+        map.on( 'mouseenter', 'places', function(e)
+        {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
 
-          var coordinates = e.features[0].geometry.coordinates.slice();
-          var description = e.features[0].properties.description;
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = e.features[0].properties.description;
 
-          // Ensure that if the map is zoomed out such that multiple
-          // copies of the feature are visible, the popup appears
-          // over the copy being pointed to.
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
 
-          // Populate the popup and set its coordinates
-          // based on the feature found.
-          popup.setLngLat(coordinates).setHTML(description).addTo(map);
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            popup.setLngLat(coordinates).setHTML(description).addTo(map);
         });
         
-        map.on('mouseleave', 'places', function () {
-          map.getCanvas().style.cursor = '';
-          popup.remove();
-          map.on('load', function() {
+        map.on( 'mouseleave', 'places', function()
+        {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+            map.on('load', function() {
 
-  });
+            });
         });
-      })
 
-}
+    })
+
+} // endFunction: loadMap()
 
 loadMap();
-start("");
+
+var sZip2Locate = JSON.parse( localStorage.getItem(locStorageZipKey) ) || "";
+if ( bDebugging )
+    if ( sZip2Locate.length > 0 )
+        console.log( "START: Found a previous zip-code to search (" + sZip2Locate + ")!" );
+start(sZip2Locate);
